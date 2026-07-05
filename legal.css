@@ -1,0 +1,85 @@
+/* Shared styling for Savi Nenapu legal pages — matches the app theme */
+:root {
+  --bg:#0A0A0A; --surface:#181818; --card:#242424;
+  --text:#F4F1EC; --text-muted:#A39C94; --text-faint:#4E4A46;
+  --primary:#FF6B23; --primary-glow:#FF8A4D; --secondary:#C21860;
+  --gold:#FFD700; --border:rgba(255,107,35,0.16);
+  --nav-bg:rgba(28,22,18,0.88);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:#FFF8F3; --surface:#FFF0E6; --card:#FFFFFF;
+    --text:#1B1210; --text-muted:#70594D; --text-faint:#CBB8AB;
+    --primary:#E4571A; --primary-glow:#FF6B23; --secondary:#B01355;
+    --gold:#A87900; --border:rgba(228,87,26,0.22);
+    --nav-bg:rgba(255,238,226,0.94);
+  }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height: 1.7; -webkit-font-smoothing: antialiased;
+}
+
+.legal-nav {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; background: var(--nav-bg);
+  backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);
+}
+.legal-nav a.brand {
+  display: flex; align-items: center; gap: 9px;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700; font-size: 1.1rem; color: var(--text); text-decoration: none;
+}
+.legal-nav a.brand span { color: var(--primary); }
+.legal-nav .brand svg { width: 20px; height: 20px; color: var(--primary); }
+.legal-nav a.back { color: var(--text-muted); text-decoration: none; font-size: 0.88rem; }
+.legal-nav a.back:hover { color: var(--primary); }
+
+.legal-wrap { max-width: 760px; margin: 0 auto; padding: 56px 24px 80px; }
+.legal-kicker {
+  font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--primary); font-weight: 700; margin-bottom: 12px;
+}
+.legal-wrap h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2rem, 5vw, 2.8rem); line-height: 1.15; margin-bottom: 12px;
+}
+.legal-meta { color: var(--text-muted); font-size: 0.86rem; margin-bottom: 40px; }
+.legal-wrap h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.4rem; margin: 40px 0 12px; color: var(--text);
+}
+.legal-wrap h3 { font-size: 1.05rem; margin: 24px 0 8px; }
+.legal-wrap p, .legal-wrap li { color: var(--text-muted); margin-bottom: 12px; }
+.legal-wrap ul, .legal-wrap ol { padding-left: 22px; margin-bottom: 12px; }
+.legal-wrap li { margin-bottom: 8px; }
+.legal-wrap a { color: var(--primary); text-decoration: none; }
+.legal-wrap a:hover { text-decoration: underline; }
+.legal-wrap strong { color: var(--text); }
+
+.legal-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 24px; margin: 20px 0;
+}
+.legal-card p:last-child { margin-bottom: 0; }
+
+/* Fields the business owner must fill before going live */
+.fill {
+  color: var(--primary); font-weight: 600;
+  background: rgba(255,107,35,0.10);
+  border: 1px dashed rgba(255,107,35,0.5);
+  border-radius: 5px; padding: 0 5px; white-space: nowrap;
+}
+
+.legal-foot {
+  border-top: 1px solid var(--border); max-width: 760px; margin: 0 auto;
+  padding: 28px 24px 48px; color: var(--text-muted); font-size: 0.82rem;
+}
+.legal-foot a { color: var(--text-muted); text-decoration: none; }
+.legal-foot a:hover { color: var(--primary); }
+.legal-foot .row { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 10px; }
