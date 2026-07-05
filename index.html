@@ -9,51 +9,60 @@
   <meta property="og:description" content="AI-powered photo & video editing and generation — share in one tap." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://savinenapu.in" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23CC001A' d='M12 21s-7.5-4.9-10-9.2C.4 8.9 2 5 5.5 5c2 0 3.4 1.1 4.2 2.4L12 10l2.3-2.6C15.1 6.1 16.5 5 18.5 5 22 5 23.6 8.9 22 11.8 19.5 16.1 12 21 12 21z'/%3E%3C/svg%3E" />
+  <meta name="theme-color" content="#0A0A0A" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23FF6B23' d='M12 21s-7.5-4.9-10-9.2C.4 8.9 2 5 5.5 5c2 0 3.4 1.1 4.2 2.4L12 10l2.3-2.6C15.1 6.1 16.5 5 18.5 5 22 5 23.6 8.9 22 11.8 19.5 16.1 12 21 12 21z'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <script>document.documentElement.classList.add('js');</script>
   <style>
-    /* ── Tokens ── */
+    /* ── Tokens (matches the app: saffron primary, magenta secondary, gold tertiary, near-black surfaces) ── */
     :root {
-      --bg:          #110400;
-      --surface:     #1C0804;
-      --surface2:    #251008;
-      --text:        #F5EAE0;
-      --text-muted:  #9A7A6A;
-      --text-faint:  #5A3A2A;
-      --crimson:     #CC001A;
-      --crimson-glow:#FF2240;
-      --gold:        #E07A0A;
-      --gold-light:  #FFB347;
-      --border:      rgba(204,0,26,0.18);
+      --bg:          #0A0A0A;
+      --surface:     #181818;
+      --surface2:    #181818;
+      --card:        #242424;
+      --text:        #F4F1EC;
+      --text-muted:  #A39C94;
+      --text-faint:  #4E4A46;
+      --primary:     #FF6B23;
+      --primary-glow:#FF8A4D;
+      --secondary:   #C21860;
+      --gold:        #FFD700;
+      --gold-light:  #FFE066;
+      --border:      rgba(255,107,35,0.16);
       --radius:      14px;
     }
     @media (prefers-color-scheme: light) {
       :root {
-        --bg:         #FDF4EC;
-        --surface:    #FDE8D8;
-        --surface2:   #F5D8C8;
-        --text:       #1A0400;
-        --text-muted: #7A4030;
-        --text-faint: #C8A090;
-        --gold:       #B25E00;
-        --gold-light: #C97400;
-        --border:     rgba(204,0,26,0.15);
+        --bg:         #FFF8F3;
+        --surface:    #FFF0E6;
+        --surface2:   #FFF0E6;
+        --card:       #FFFFFF;
+        --text:       #1B1210;
+        --text-muted: #70594D;
+        --text-faint: #CBB8AB;
+        --primary:    #E4571A;
+        --primary-glow:#FF6B23;
+        --secondary:  #B01355;
+        --gold:       #A87900;
+        --gold-light: #C08E00;
+        --border:     rgba(228,87,26,0.22);
       }
     }
     :root[data-theme="dark"] {
-      --bg:#110400; --surface:#1C0804; --surface2:#251008;
-      --text:#F5EAE0; --text-muted:#9A7A6A; --text-faint:#5A3A2A;
-      --gold:#E07A0A; --gold-light:#FFB347;
-      --border:rgba(204,0,26,0.18);
+      --bg:#0A0A0A; --surface:#181818; --surface2:#181818; --card:#242424;
+      --text:#F4F1EC; --text-muted:#A39C94; --text-faint:#4E4A46;
+      --primary:#FF6B23; --primary-glow:#FF8A4D; --secondary:#C21860;
+      --gold:#FFD700; --gold-light:#FFE066;
+      --border:rgba(255,107,35,0.16);
     }
     :root[data-theme="light"] {
-      --bg:#FDF4EC; --surface:#FDE8D8; --surface2:#F5D8C8;
-      --text:#1A0400; --text-muted:#7A4030; --text-faint:#C8A090;
-      --gold:#B25E00; --gold-light:#C97400;
-      --border:rgba(204,0,26,0.15);
+      --bg:#FFF8F3; --surface:#FFF0E6; --surface2:#FFF0E6; --card:#FFFFFF;
+      --text:#1B1210; --text-muted:#70594D; --text-faint:#CBB8AB;
+      --primary:#E4571A; --primary-glow:#FF6B23; --secondary:#B01355;
+      --gold:#A87900; --gold-light:#C08E00;
+      --border:rgba(228,87,26,0.22);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -92,22 +101,22 @@
       background: transparent;
       transition: background 0.3s;
     }
-    nav.scrolled { background: rgba(17,4,0,0.92); backdrop-filter: blur(12px); }
-    :root[data-theme="light"] nav.scrolled { background: rgba(253,244,236,0.92); }
+    nav.scrolled { background: rgba(10,10,10,0.92); backdrop-filter: blur(12px); }
+    :root[data-theme="light"] nav.scrolled { background: rgba(255,248,243,0.92); }
     .nav-logo {
       font-family: 'Playfair Display', Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
       font-size: 1.15rem; font-weight: 700;
       color: var(--text); letter-spacing: 0.02em;
     }
-    .nav-logo span { color: var(--crimson); }
+    .nav-logo span { color: var(--primary); }
     .nav-dl {
-      background: var(--crimson); color: #fff;
+      background: var(--primary); color: #fff;
       border: none; border-radius: 8px;
       padding: 9px 20px; font-size: 0.85rem; font-weight: 600;
       cursor: pointer; letter-spacing: 0.03em; text-decoration: none;
       transition: background 0.2s;
     }
-    .nav-dl:hover { background: var(--crimson-glow); }
+    .nav-dl:hover { background: var(--primary-glow); }
 
     /* ── Hero ── */
     .hero {
@@ -155,17 +164,17 @@
 
     .btn-primary {
       display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, var(--crimson-glow), var(--crimson) 60%); color: #fff;
+      background: linear-gradient(135deg, var(--primary-glow), var(--primary) 60%); color: #fff;
       padding: 15px 32px; border-radius: 10px;
       font-size: 1rem; font-weight: 700; text-decoration: none;
       letter-spacing: 0.02em;
       transition: background 0.2s, transform 0.15s;
-      box-shadow: 0 4px 24px rgba(204,0,26,0.35);
+      box-shadow: 0 4px 24px rgba(255,107,35,0.35);
     }
     .btn-primary:hover {
-      background: linear-gradient(135deg, var(--crimson-glow), var(--crimson-glow));
+      background: linear-gradient(135deg, var(--primary-glow), var(--primary-glow));
       transform: translateY(-2px);
-      box-shadow: 0 6px 32px rgba(204,0,26,0.5);
+      box-shadow: 0 6px 32px rgba(255,107,35,0.5);
     }
 
     .btn-secondary {
@@ -176,7 +185,7 @@
       border: 1.5px solid var(--border);
       transition: border-color 0.2s, background 0.2s;
     }
-    .btn-secondary:hover { border-color: var(--crimson); background: rgba(204,0,26,0.06); }
+    .btn-secondary:hover { border-color: var(--primary); background: rgba(255,107,35,0.08); }
 
     .hero-badge {
       margin-top: 52px;
@@ -214,24 +223,24 @@
       gap: 24px; margin-top: 56px;
     }
     .feature-card {
-      background: var(--bg); border: 1px solid var(--border);
+      background: var(--card); border: 1px solid var(--border);
       border-radius: var(--radius); padding: 32px 28px;
       transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
     }
     .feature-card:hover {
-      border-color: var(--crimson);
+      border-color: var(--primary);
       transform: translateY(-5px);
-      box-shadow: 0 14px 40px rgba(204,0,26,0.16);
+      box-shadow: 0 14px 40px rgba(255,107,35,0.14);
     }
     @media (prefers-reduced-motion: reduce) {
       .feature-card, .feature-card:hover { transform: none; transition: none; }
     }
     .feature-icon {
       width: 48px; height: 48px; border-radius: 12px;
-      background: linear-gradient(135deg, rgba(204,0,26,0.16), rgba(224,122,10,0.12));
+      background: linear-gradient(135deg, rgba(255,107,35,0.16), rgba(194,24,96,0.14));
       border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px; color: var(--gold-light);
+      margin-bottom: 20px; color: var(--primary);
     }
     .feature-icon svg { width: 24px; height: 24px; display: block; }
     .feature-title {
@@ -262,7 +271,7 @@
     .step::before {
       content: ''; position: absolute; top: -5px; left: 0;
       width: 8px; height: 8px; border-radius: 50%;
-      background: var(--crimson);
+      background: var(--primary);
     }
 
     /* ── Testimonial ── */
@@ -273,7 +282,7 @@
       font-weight: 400; font-style: italic;
       line-height: 1.5; text-wrap: balance;
       color: var(--text); max-width: 720px;
-      border-left: 3px solid var(--crimson);
+      border-left: 3px solid var(--secondary);
       padding-left: 28px; margin-bottom: 20px;
     }
     .quote-attr { color: var(--text-muted); font-size: 0.88rem; padding-left: 28px; }
@@ -281,7 +290,7 @@
     /* ── Download CTA ── */
     .cta-section { text-align: center; }
     .cta-heart {
-      font-size: 3rem; margin-bottom: 24px;
+      font-size: 3rem; margin-bottom: 24px; color: var(--secondary);
       display: block; animation: pulse 2.4s ease-in-out infinite;
     }
     @keyframes pulse {
@@ -304,7 +313,7 @@
       color: var(--text-muted); font-size: 0.82rem;
     }
     footer a { color: var(--text-muted); text-decoration: none; }
-    footer a:hover { color: var(--crimson); }
+    footer a:hover { color: var(--primary); }
 
     /* ── Theme toggle ── */
     .theme-btn {
@@ -537,9 +546,9 @@
       i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
     ctx.closePath();
-    ctx.strokeStyle = `rgba(204,0,26,${glow})`;
+    ctx.strokeStyle = `rgba(255,107,35,${glow})`;
     ctx.lineWidth = scale * 0.9;
-    ctx.shadowColor = '#CC001A';
+    ctx.shadowColor = '#FF6B23';
     ctx.shadowBlur = scale * 4;
     ctx.stroke();
     ctx.restore();
@@ -548,8 +557,8 @@
   function drawSparkle(cx, cy, size, alpha) {
     ctx.save();
     ctx.globalAlpha = alpha;
-    ctx.fillStyle = '#FFB347';
-    ctx.shadowColor = '#E07A0A';
+    ctx.fillStyle = '#FFD700';
+    ctx.shadowColor = '#FFD700';
     ctx.shadowBlur = 20;
     const arms = 4;
     ctx.beginPath();
@@ -584,8 +593,8 @@
       const r = baseScale * (0.35 + 0.15 * Math.sin(t + i));
       ctx.save();
       ctx.globalAlpha = 0.4 + 0.2 * Math.sin(t + i * 1.2);
-      ctx.fillStyle = '#E07A0A';
-      ctx.shadowColor = '#E07A0A'; ctx.shadowBlur = 8;
+      ctx.fillStyle = '#C21860';
+      ctx.shadowColor = '#C21860'; ctx.shadowBlur = 8;
       ctx.beginPath(); ctx.arc(dx, dy, r, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
     });
