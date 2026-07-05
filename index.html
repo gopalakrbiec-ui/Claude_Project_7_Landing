@@ -291,6 +291,35 @@
       background: var(--primary);
     }
 
+    /* ── App screens ── */
+    .screens-section { background: var(--surface); }
+    .screens-strip {
+      display: flex; gap: 22px; margin-top: 48px;
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      padding: 6px 4px 22px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin; scrollbar-color: var(--primary) transparent;
+    }
+    .screen-card { flex: 0 0 auto; width: 215px; scroll-snap-align: center; }
+    .phone-frame {
+      background: #000; border: 1px solid var(--border);
+      border-radius: 30px; padding: 9px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .screen-card:hover .phone-frame {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 48px rgba(255,107,35,0.2);
+    }
+    .phone-frame img { width: 100%; display: block; border-radius: 22px; }
+    .screen-cap {
+      text-align: center; font-size: 0.82rem; color: var(--text-muted);
+      margin-top: 12px; letter-spacing: 0.02em;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .screen-card:hover .phone-frame { transform: none; transition: none; }
+    }
+
     /* ── Testimonial ── */
     .quote-section { background: var(--surface2); }
     .pull-quote {
@@ -465,6 +494,50 @@
         <div class="step-num">4</div>
         <div class="step-title">Download &amp; share</div>
         <p class="step-desc">Your creation is ready in seconds. Download in full quality or share straight to WhatsApp.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- App screens -->
+<section class="screens-section">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-label">See it in action</p>
+      <h2 class="section-title">Inside Savi Nenapu</h2>
+      <p class="section-sub">
+        A quick tour of the app — from browsing templates to AI photo
+        and video creation, all a few taps away.
+      </p>
+    </div>
+    <div class="screens-strip reveal">
+      <div class="screen-card">
+        <div class="phone-frame"><img src="images/app/screen-1.jpg" alt="Savi Nenapu home screen with template categories" loading="lazy" /></div>
+        <p class="screen-cap">Browse templates</p>
+      </div>
+      <div class="screen-card">
+        <div class="phone-frame"><img src="images/app/screen-2.jpg" alt="AI Magic Tools radial menu" loading="lazy" /></div>
+        <p class="screen-cap">AI Magic Tools</p>
+      </div>
+      <div class="screen-card">
+        <div class="phone-frame"><img src="images/app/screen-3.jpg" alt="Discover screen with style search" loading="lazy" /></div>
+        <p class="screen-cap">Discover styles</p>
+      </div>
+      <div class="screen-card">
+        <div class="phone-frame"><img src="images/app/screen-4.jpg" alt="Seedance video generation screen" loading="lazy" /></div>
+        <p class="screen-cap">Generate AI video</p>
+      </div>
+      <div class="screen-card">
+        <div class="phone-frame"><img src="images/app/screen-5.jpg" alt="Template detail screen with photo upload" loading="lazy" /></div>
+        <p class="screen-cap">Create from a template</p>
+      </div>
+      <div class="screen-card">
+        <div class="phone-frame"><img src="images/app/screen-6.jpg" alt="Photo Merge screen" loading="lazy" /></div>
+        <p class="screen-cap">Merge photos with AI</p>
+      </div>
+      <div class="screen-card">
+        <div class="phone-frame"><img src="images/app/screen-7.jpg" alt="AI tool picker sheet" loading="lazy" /></div>
+        <p class="screen-cap">Pick an AI tool</p>
       </div>
     </div>
   </div>
