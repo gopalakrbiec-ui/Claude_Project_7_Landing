@@ -11,6 +11,7 @@
   <meta property="og:url" content="https://savinenapu.in" />
   <meta name="theme-color" content="#0A0A0A" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23FF6B23' d='M12 21s-7.5-4.9-10-9.2C.4 8.9 2 5 5.5 5c2 0 3.4 1.1 4.2 2.4L12 10l2.3-2.6C15.1 6.1 16.5 5 18.5 5 22 5 23.6 8.9 22 11.8 19.5 16.1 12 21 12 21z'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://images.unsplash.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -710,6 +711,53 @@
     flash: 0
   }));
 
+  /* Real photography (Unsplash License — free to use). Each node first tries
+     a local file in images/ (drop your own photos there to override), then
+     the Unsplash CDN, and keeps the illustrated thumbnail if both fail. */
+  const EVENT_NAMES = ['sunset', 'wedding', 'birthday', 'festival', 'beach', 'balloons'];
+  const REAL_PHOTOS = {
+    profiles: [
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=60&fit=crop',
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=60&fit=crop',
+      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=60&fit=crop',
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=60&fit=crop',
+      'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=200&q=60&fit=crop',
+      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=60&fit=crop'
+    ],
+    events: [
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=240&q=60',
+      'https://images.unsplash.com/photo-1519741497674-611481863552?w=240&q=60',
+      'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=240&q=60',
+      'https://images.unsplash.com/photo-1498931299472-f7a63a5a1cfa?w=240&q=60',
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=240&q=60',
+      'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=240&q=60'
+    ]
+  };
+  function loadFirst(srcs, cb) {
+    if (!srcs.length) return;
+    const img = new Image();
+    img.onload = () => cb(img);
+    img.onerror = () => loadFirst(srcs.slice(1), cb);
+    img.src = srcs[0];
+  }
+  nodes.forEach((n, i) => {
+    const j = (i >> 1) % 6;
+    const srcs = n.isPhoto
+      ? ['images/event-' + EVENT_NAMES[j] + '.jpg', REAL_PHOTOS.events[j]]
+      : ['images/profile-' + (j + 1) + '.jpg', REAL_PHOTOS.profiles[j]];
+    loadFirst(srcs, (img) => {
+      n.thumb = img;
+      if (reducedMotion) frame();
+    });
+  });
+
+  function drawCover(img, dx, dy, dw, dh) {
+    const iw = img.width, ih = img.height;
+    const s = Math.max(dw / iw, dh / ih);
+    const sw = dw / s, sh = dh / s;
+    ctx.drawImage(img, (iw - sw) / 2, (ih - sh) / 2, sw, sh, dx, dy, dw, dh);
+  }
+
   const pulses = [];  // photos travelling along graph edges
   const hearts = [];  // falling love
   let frameCount = 0;
@@ -810,7 +858,7 @@
       ctx.fillStyle = '#FDFBF7';
       rrect(ctx, -w / 2, -h / 2, w, h, r * 0.18); ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.drawImage(n.thumb, -w / 2 + pad, -h / 2 + pad, w - pad * 2, h - pad * 2 - r * 0.32);
+      drawCover(n.thumb, -w / 2 + pad, -h / 2 + pad, w - pad * 2, h - pad * 2 - r * 0.32);
       ctx.globalAlpha = 0.9; ctx.lineWidth = 1.4; ctx.strokeStyle = n.color;
       rrect(ctx, -w / 2, -h / 2, w, h, r * 0.18); ctx.stroke();
     } else {
@@ -821,7 +869,7 @@
       ctx.shadowBlur = 0;
       ctx.save();
       ctx.beginPath(); ctx.arc(0, 0, r - 1, 0, Math.PI * 2); ctx.clip();
-      ctx.drawImage(n.thumb, -r, -r, r * 2, r * 2);
+      drawCover(n.thumb, -r, -r, r * 2, r * 2);
       ctx.restore();
       ctx.lineWidth = 2; ctx.strokeStyle = n.color;
       ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.stroke();
