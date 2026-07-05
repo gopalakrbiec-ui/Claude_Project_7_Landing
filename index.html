@@ -9,6 +9,11 @@
   <meta property="og:description" content="AI photo editing app for India. Wedding portraits, festival memories, beautiful creations in seconds." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://savinenapu.in" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23CC001A' d='M12 21s-7.5-4.9-10-9.2C.4 8.9 2 5 5.5 5c2 0 3.4 1.1 4.2 2.4L12 10l2.3-2.6C15.1 6.1 16.5 5 18.5 5 22 5 23.6 8.9 22 11.8 19.5 16.1 12 21 12 21z'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@500;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script>document.documentElement.classList.add('js');</script>
   <style>
     /* ── Tokens ── */
     :root {
@@ -33,17 +38,21 @@
         --text:       #1A0400;
         --text-muted: #7A4030;
         --text-faint: #C8A090;
+        --gold:       #B25E00;
+        --gold-light: #C97400;
         --border:     rgba(204,0,26,0.15);
       }
     }
     :root[data-theme="dark"] {
       --bg:#110400; --surface:#1C0804; --surface2:#251008;
       --text:#F5EAE0; --text-muted:#9A7A6A; --text-faint:#5A3A2A;
+      --gold:#E07A0A; --gold-light:#FFB347;
       --border:rgba(204,0,26,0.18);
     }
     :root[data-theme="light"] {
       --bg:#FDF4EC; --surface:#FDE8D8; --surface2:#F5D8C8;
       --text:#1A0400; --text-muted:#7A4030; --text-faint:#C8A090;
+      --gold:#B25E00; --gold-light:#C97400;
       --border:rgba(204,0,26,0.15);
     }
 
@@ -52,9 +61,26 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', 'Noto Sans Kannada', 'Segoe UI', system-ui, -apple-system, sans-serif;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Scroll reveal (html.js guard keeps content visible if JS fails) ── */
+    html.js .reveal {
+      opacity: 0; transform: translateY(26px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    html.js .reveal.visible { opacity: 1; transform: none; }
+    .features-grid .feature-card:nth-child(2) { transition-delay: 0.08s; }
+    .features-grid .feature-card:nth-child(3) { transition-delay: 0.16s; }
+    .features-grid .feature-card:nth-child(4) { transition-delay: 0.24s; }
+    .features-grid .feature-card:nth-child(5) { transition-delay: 0.32s; }
+    .features-grid .feature-card:nth-child(6) { transition-delay: 0.40s; }
+    .steps .step:nth-child(2) { transition-delay: 0.12s; }
+    .steps .step:nth-child(3) { transition-delay: 0.24s; }
+    @media (prefers-reduced-motion: reduce) {
+      html.js .reveal { opacity: 1; transform: none; transition: none; }
     }
 
     /* ── Nav ── */
@@ -68,7 +94,7 @@
     nav.scrolled { background: rgba(17,4,0,0.92); backdrop-filter: blur(12px); }
     :root[data-theme="light"] nav.scrolled { background: rgba(253,244,236,0.92); }
     .nav-logo {
-      font-family: Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+      font-family: 'Playfair Display', Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
       font-size: 1.15rem; font-weight: 700;
       color: var(--text); letter-spacing: 0.02em;
     }
@@ -104,13 +130,17 @@
     .hero-kannada {
       font-family: 'Noto Sans Kannada', 'Kannada Sangam MN', sans-serif;
       font-size: clamp(3rem, 10vw, 6.5rem);
-      font-weight: 700; line-height: 1.05;
+      font-weight: 700; line-height: 1.15;
       color: var(--text);
+      background: linear-gradient(115deg, var(--text) 45%, var(--gold-light) 80%, var(--gold));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
       text-wrap: balance;
       margin-bottom: 10px;
+      padding-bottom: 0.1em;
     }
     .hero-english {
-      font-family: Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+      font-family: 'Playfair Display', Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
       font-size: clamp(1.1rem, 3vw, 1.6rem);
       color: var(--text-muted); font-style: italic;
       margin-bottom: 28px; text-wrap: balance;
@@ -124,14 +154,18 @@
 
     .btn-primary {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--crimson); color: #fff;
+      background: linear-gradient(135deg, var(--crimson-glow), var(--crimson) 60%); color: #fff;
       padding: 15px 32px; border-radius: 10px;
       font-size: 1rem; font-weight: 700; text-decoration: none;
       letter-spacing: 0.02em;
       transition: background 0.2s, transform 0.15s;
       box-shadow: 0 4px 24px rgba(204,0,26,0.35);
     }
-    .btn-primary:hover { background: var(--crimson-glow); transform: translateY(-2px); }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--crimson-glow), var(--crimson-glow));
+      transform: translateY(-2px);
+      box-shadow: 0 6px 32px rgba(204,0,26,0.5);
+    }
 
     .btn-secondary {
       display: inline-flex; align-items: center; gap: 8px;
@@ -158,10 +192,13 @@
       color: var(--gold); margin-bottom: 12px; font-weight: 700;
     }
     .section-title {
-      font-family: Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+      font-family: 'Playfair Display', Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
       font-size: clamp(1.8rem, 4vw, 2.6rem);
-      font-weight: 700; line-height: 1.2; text-wrap: balance;
+      font-weight: 700; line-height: 1.25; text-wrap: balance;
       margin-bottom: 16px;
+      background: linear-gradient(115deg, var(--text) 60%, var(--gold));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     .section-sub {
       color: var(--text-muted); font-size: 1.05rem;
@@ -178,17 +215,26 @@
     .feature-card {
       background: var(--bg); border: 1px solid var(--border);
       border-radius: var(--radius); padding: 32px 28px;
-      transition: border-color 0.2s;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
     }
-    .feature-card:hover { border-color: var(--crimson); }
+    .feature-card:hover {
+      border-color: var(--crimson);
+      transform: translateY(-5px);
+      box-shadow: 0 14px 40px rgba(204,0,26,0.16);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .feature-card, .feature-card:hover { transform: none; transition: none; }
+    }
     .feature-icon {
       width: 48px; height: 48px; border-radius: 12px;
-      background: rgba(204,0,26,0.1);
+      background: linear-gradient(135deg, rgba(204,0,26,0.16), rgba(224,122,10,0.12));
+      border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 20px; font-size: 1.5rem;
+      margin-bottom: 20px; color: var(--gold-light);
     }
+    .feature-icon svg { width: 24px; height: 24px; display: block; }
     .feature-title {
-      font-family: Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+      font-family: 'Playfair Display', Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
       font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;
     }
     .feature-desc { color: var(--text-muted); font-size: 0.93rem; line-height: 1.65; }
@@ -205,7 +251,7 @@
       position: relative;
     }
     .step-num {
-      font-family: Palatino, 'Palatino Linotype', Georgia, serif;
+      font-family: 'Playfair Display', Palatino, 'Palatino Linotype', Georgia, serif;
       font-size: 3rem; font-weight: 700;
       color: var(--text-faint); line-height: 1;
       margin-bottom: 16px;
@@ -221,7 +267,7 @@
     /* ── Testimonial ── */
     .quote-section { background: var(--surface2); }
     .pull-quote {
-      font-family: Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+      font-family: 'Playfair Display', Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
       font-size: clamp(1.4rem, 3.5vw, 2rem);
       font-weight: 400; font-style: italic;
       line-height: 1.5; text-wrap: balance;
@@ -281,7 +327,7 @@
 <!-- Hero -->
 <section class="hero">
   <canvas id="hero-canvas"></canvas>
-  <div class="hero-content">
+  <div class="hero-content reveal">
     <p class="hero-eyebrow">Now available for Android</p>
     <h1 class="hero-kannada">ಸವಿ ನೆನಪು</h1>
     <p class="hero-english">Savi Nenapu · Sweet Memories</p>
@@ -305,7 +351,7 @@
 
 <!-- Features -->
 <section class="features-bg">
-  <div class="section-inner">
+  <div class="section-inner reveal">
     <p class="section-label">What you can do</p>
     <h2 class="section-title">Your memories, beautifully reimagined</h2>
     <p class="section-sub">
@@ -313,48 +359,48 @@
       add your photo, and let AI do the rest.
     </p>
     <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">💍</div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="15" r="6"/><path d="M9.5 3h5L17 6l-5 3-5-3z"/></svg></div>
         <div class="feature-title">Wedding &amp; Events</div>
         <p class="feature-desc">
           Gorgeous AI edits for your wedding portraits, engagement photos, and
           special celebrations with hundreds of templates.
         </p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">🎨</div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4l1.6 4.2L16.8 9.8l-4.2 1.6L11 15.6 9.4 11.4 5.2 9.8l4.2-1.6z"/><path d="M18 14l.8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8z"/></svg></div>
         <div class="feature-title">AI Photo &amp; Video</div>
         <p class="feature-desc">
           Animate portraits, restore old photos, generate cinematic videos —
           all processed in the cloud, no powerful phone needed.
         </p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">📲</div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></div>
         <div class="feature-title">Share in One Tap</div>
         <p class="feature-desc">
           Download your creation or share directly to WhatsApp the moment
           it's ready — ready for family groups instantly.
         </p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">🏪</div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v10h16V10"/><path d="M3 7l2-4h14l2 4H3z"/><path d="M3 7v1a3 3 0 006 0V7a3 3 0 006 0v1a3 3 0 006 0V7"/><path d="M10 20v-5h4v5"/></svg></div>
         <div class="feature-title">Agent Mode</div>
         <p class="feature-desc">
           Local shopkeepers can place orders on behalf of customers and
           earn commission on every creation — a new income stream.
         </p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">🌐</div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.9 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.9-3.8-9S9.5 5.6 12 3z"/></svg></div>
         <div class="feature-title">Your Language</div>
         <p class="feature-desc">
           Available in Kannada, Hindi, and Telugu — use Savi Nenapu
           entirely in the language you're most comfortable with.
         </p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">💳</div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/><path d="M6.5 15h4"/></svg></div>
         <div class="feature-title">Pay As You Go</div>
         <p class="feature-desc">
           Top up with UPI and pay only for what you create —
@@ -367,21 +413,21 @@
 
 <!-- How it works -->
 <section id="how">
-  <div class="section-inner">
+  <div class="section-inner reveal">
     <p class="section-label">Simple from start to finish</p>
     <h2 class="section-title">Three steps to a beautiful memory</h2>
     <div class="steps">
-      <div class="step">
+      <div class="step reveal">
         <div class="step-num">1</div>
         <div class="step-title">Pick a template</div>
         <p class="step-desc">Browse wedding, festival, or portrait templates. Find the style that fits your moment.</p>
       </div>
-      <div class="step">
+      <div class="step reveal">
         <div class="step-num">2</div>
         <div class="step-title">Upload your photo</div>
         <p class="step-desc">Add your photo from the gallery. Our AI handles the editing — no skills needed.</p>
       </div>
-      <div class="step">
+      <div class="step reveal">
         <div class="step-num">3</div>
         <div class="step-title">Download &amp; share</div>
         <p class="step-desc">Your creation is ready in seconds. Download it or share straight to WhatsApp.</p>
@@ -392,7 +438,7 @@
 
 <!-- Pull quote -->
 <section class="quote-section">
-  <div class="section-inner">
+  <div class="section-inner reveal">
     <blockquote class="pull-quote">
       "Our wedding photos came out more beautiful than we ever imagined.
       Everyone in our family asked where we got them edited."
@@ -403,7 +449,7 @@
 
 <!-- Download CTA -->
 <section class="cta-section" id="download">
-  <div class="section-inner">
+  <div class="section-inner reveal">
     <span class="cta-heart">♥</span>
     <p class="section-label" style="text-align:center">Free to download</p>
     <h2 class="section-title" style="text-align:center;max-width:480px;margin:0 auto 16px">
@@ -447,6 +493,16 @@
     theme = t;
   }
   btn.addEventListener('click', () => applyTheme(theme === 'dark' ? 'light' : 'dark'));
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
   const canvas = document.getElementById('hero-canvas');
   const ctx = canvas.getContext('2d');
