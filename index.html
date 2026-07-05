@@ -107,8 +107,16 @@
       font-family: 'Playfair Display', Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
       font-size: 1.15rem; font-weight: 700;
       color: var(--text); letter-spacing: 0.02em;
+      display: flex; align-items: center;
     }
     .nav-logo span { color: var(--primary); }
+    .logo-heart {
+      width: 22px; height: 22px; margin-right: 9px;
+      color: var(--primary);
+      filter: drop-shadow(0 0 6px rgba(255,107,35,0.55));
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @media (prefers-reduced-motion: reduce) { .logo-heart { animation: none; } }
     .nav-dl {
       background: var(--primary); color: #fff;
       border: none; border-radius: 8px;
@@ -129,7 +137,7 @@
     }
     #hero-canvas {
       position: absolute; inset: 0; width: 100%; height: 100%;
-      pointer-events: none; opacity: 0.55;
+      pointer-events: none; opacity: 0.65;
     }
     .hero-content { position: relative; z-index: 1; max-width: 680px; }
 
@@ -330,7 +338,10 @@
 
 <!-- Nav -->
 <nav id="nav">
-  <div class="nav-logo">Savi <span>Nenapu</span></div>
+  <div class="nav-logo">
+    <svg class="logo-heart" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.9-10-9.2C.4 8.9 2 5 5.5 5c2 0 3.4 1.1 4.2 2.4L12 10l2.3-2.6C15.1 6.1 16.5 5 18.5 5 22 5 23.6 8.9 22 11.8 19.5 16.1 12 21 12 21z"/></svg>
+    Savi&nbsp;<span>Nenapu</span>
+  </div>
   <a class="nav-dl" href="#download">Download App</a>
 </nav>
 
@@ -505,6 +516,7 @@
     document.documentElement.setAttribute('data-theme', t);
     btn.textContent = t === 'dark' ? '☀️' : '🌙';
     theme = t;
+    if (typeof frame === 'function' && typeof reducedMotion !== 'undefined' && reducedMotion) frame();
   }
   btn.addEventListener('click', () => applyTheme(theme === 'dark' ? 'light' : 'dark'));
 
@@ -529,78 +541,228 @@
   window.addEventListener('resize', resize);
   resize();
 
-  function heartX(angle, s) { return s * 16 * Math.pow(Math.sin(angle), 3); }
-  function heartY(angle, s) {
-    return -s * (13*Math.cos(angle) - 5*Math.cos(2*angle) - 2*Math.cos(3*angle) - Math.cos(4*angle));
+  /* ── Hero: a living knowledge graph — people photographing, creating with
+     Savi Nenapu, and sharing with each other — under a sky of stars and
+     falling hearts. ── */
+  const SAFFRON = '#FF6B23', MAGENTA = '#C21860', GOLD = '#FFD700';
+  const PALETTE = [SAFFRON, MAGENTA, GOLD];
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function isLight() {
+    const dt = document.documentElement.getAttribute('data-theme');
+    if (dt) return dt === 'light';
+    return window.matchMedia('(prefers-color-scheme: light)').matches;
   }
 
-  function drawHeart(cx, cy, scale, alpha, glow) {
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    const n = 200;
+  const stars = Array.from({ length: 80 }, () => ({
+    x: Math.random(), y: Math.random(),
+    r: 0.5 + Math.random() * 1.4,
+    p: Math.random() * Math.PI * 2,
+    s: 0.6 + Math.random() * 1.4
+  }));
+
+  const NODE_COUNT = 12;
+  const nodes = Array.from({ length: NODE_COUNT }, (_, i) => ({
+    a: (i / NODE_COUNT) * Math.PI * 2,
+    wob: Math.random() * Math.PI * 2,
+    color: PALETTE[i % 3],
+    kind: i % 2, // 0 = person, 1 = photo they created
+    flash: 0
+  }));
+
+  const pulses = [];  // photos travelling along graph edges
+  const hearts = [];  // falling love
+  let frameCount = 0;
+
+  function nodePos(n) {
+    const rx = Math.min(W * 0.40, 540);
+    const ry = Math.min(H * 0.36, 310);
+    const drift = reducedMotion ? 0 : t;
+    return {
+      x: W / 2 + Math.cos(n.a + drift * 0.05) * rx,
+      y: H / 2 + Math.sin(n.a + drift * 0.05) * ry + Math.sin(drift * 0.9 + n.wob) * 9
+    };
+  }
+
+  function traceHeart(cx, cy, s) {
     ctx.beginPath();
-    for (let i = 0; i <= n; i++) {
-      const a = (i / n) * Math.PI * 2;
-      const x = cx + heartX(a, scale);
-      const y = cy + heartY(a, scale);
+    for (let i = 0; i <= 40; i++) {
+      const a = (i / 40) * Math.PI * 2;
+      const x = cx + s * Math.pow(Math.sin(a), 3);
+      const y = cy - (s / 14) * (13 * Math.cos(a) - 5 * Math.cos(2 * a) - 2 * Math.cos(3 * a) - Math.cos(4 * a));
       i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
     ctx.closePath();
-    ctx.strokeStyle = `rgba(255,107,35,${glow})`;
-    ctx.lineWidth = scale * 0.9;
-    ctx.shadowColor = '#FF6B23';
-    ctx.shadowBlur = scale * 4;
-    ctx.stroke();
+  }
+
+  function drawSparkle(cx, cy, size, alpha, color) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = color; ctx.shadowColor = color; ctx.shadowBlur = 16;
+    ctx.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2 - Math.PI / 2;
+      const r = i % 2 === 0 ? size : size * 0.2;
+      const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath(); ctx.fill();
     ctx.restore();
   }
 
-  function drawSparkle(cx, cy, size, alpha) {
+  function drawStars() {
+    stars.forEach((s) => {
+      const tw = reducedMotion ? 0.6 : 0.35 + 0.65 * Math.abs(Math.sin(t * s.s + s.p));
+      ctx.save();
+      ctx.globalAlpha = 0.5 * tw;
+      ctx.fillStyle = s.r > 1.4 ? (isLight() ? '#B25E00' : GOLD) : (isLight() ? '#C98A50' : '#FFF6E8');
+      ctx.beginPath(); ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function drawEdges(hub, pos) {
     ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.fillStyle = '#FFD700';
-    ctx.shadowColor = '#FFD700';
-    ctx.shadowBlur = 20;
-    const arms = 4;
-    ctx.beginPath();
-    for (let i = 0; i < arms * 2; i++) {
-      const a = (i / (arms * 2)) * Math.PI * 2 - Math.PI / 2;
-      const r = i % 2 === 0 ? size : size * 0.18;
-      const x = cx + Math.cos(a) * r;
-      const y = cy + Math.sin(a) * r;
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.closePath();
-    ctx.fill();
+    ctx.lineWidth = 1;
+    pos.forEach((p, i) => {
+      // spoke to the Savi Nenapu hub
+      ctx.globalAlpha = 0.16 + (reducedMotion ? 0 : 0.06 * Math.sin(t * 1.4 + i));
+      ctx.strokeStyle = nodes[i].color;
+      ctx.beginPath(); ctx.moveTo(hub.x, hub.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+      // ring edge to the neighbour — everyone connected
+      const q = pos[(i + 1) % pos.length];
+      ctx.globalAlpha = 0.09;
+      ctx.strokeStyle = SAFFRON;
+      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+    });
     ctx.restore();
+  }
+
+  function drawPulses(hub, pos) {
+    if (!reducedMotion && frameCount % 26 === 0 && pulses.length < 14) {
+      const i = Math.floor(Math.random() * NODE_COUNT);
+      pulses.push({ i, t: 0, speed: 0.007 + Math.random() * 0.007, out: Math.random() < 0.5, color: nodes[i].color });
+    }
+    for (let k = pulses.length - 1; k >= 0; k--) {
+      const pl = pulses[k];
+      pl.t += pl.speed;
+      if (pl.t >= 1) { pulses.splice(k, 1); continue; }
+      const p = pos[pl.i];
+      const from = pl.out ? hub : p, to = pl.out ? p : hub;
+      const x = from.x + (to.x - from.x) * pl.t;
+      const y = from.y + (to.y - from.y) * pl.t;
+      ctx.save();
+      ctx.globalAlpha = 0.9 * Math.sin(Math.PI * pl.t);
+      ctx.fillStyle = pl.color; ctx.shadowColor = pl.color; ctx.shadowBlur = 14;
+      ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  function drawNode(n, p, r) {
+    ctx.save();
+    ctx.globalAlpha = 0.95;
+    ctx.fillStyle = isLight() ? '#FFFFFF' : '#161616';
+    ctx.strokeStyle = n.color; ctx.lineWidth = 1.6;
+    ctx.shadowColor = n.color; ctx.shadowBlur = 12;
+    ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    if (n.kind === 0) {
+      // person — head and shoulders
+      ctx.beginPath(); ctx.arc(p.x, p.y - r * 0.28, r * 0.3, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(p.x, p.y + r * 0.75, r * 0.58, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();
+    } else {
+      // photo they created
+      const w = r * 1.1, h = r * 0.9;
+      ctx.strokeRect(p.x - w / 2, p.y - h / 2, w, h);
+      ctx.beginPath(); ctx.arc(p.x - w * 0.2, p.y - h * 0.15, r * 0.12, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(p.x - w / 2 + 1, p.y + h / 2 - 1); ctx.lineTo(p.x + w * 0.1, p.y - h * 0.05); ctx.lineTo(p.x + w / 2 - 1, p.y + h / 2 - 1); ctx.stroke();
+    }
+    ctx.restore();
+
+    // camera flash! someone just took a photo
+    if (n.flash > 0.04) {
+      drawSparkle(p.x + r * 0.9, p.y - r * 0.9, r * 1.5 * n.flash, n.flash, GOLD);
+      n.flash *= 0.93;
+    }
+  }
+
+  function drawHub(hub) {
+    const beat = reducedMotion ? 0.5 : 0.5 + 0.5 * Math.sin(t * 2);
+    const r = Math.max(30, Math.min(W, H) * 0.045);
+    const grad = ctx.createLinearGradient(hub.x - r, hub.y - r, hub.x + r, hub.y + r);
+    grad.addColorStop(0, SAFFRON); grad.addColorStop(1, MAGENTA);
+    ctx.save();
+    // halo
+    ctx.globalAlpha = 0.12 + 0.08 * beat;
+    ctx.fillStyle = SAFFRON;
+    ctx.beginPath(); ctx.arc(hub.x, hub.y, r * (1.7 + 0.2 * beat), 0, Math.PI * 2); ctx.fill();
+    // ring
+    ctx.globalAlpha = 0.95;
+    ctx.fillStyle = isLight() ? '#FFFFFF' : '#141414';
+    ctx.strokeStyle = grad; ctx.lineWidth = 2.2;
+    ctx.shadowColor = SAFFRON; ctx.shadowBlur = 22 + 14 * beat;
+    ctx.beginPath(); ctx.arc(hub.x, hub.y, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.shadowBlur = 0;
+    // the app at the heart of it all
+    traceHeart(hub.x, hub.y + r * 0.06, r * 0.52 * (1 + 0.06 * beat));
+    ctx.fillStyle = grad; ctx.fill();
+    ctx.restore();
+    drawSparkle(hub.x + r * 0.85, hub.y - r * 0.85, r * 0.34 * (0.7 + 0.3 * beat), 0.85, GOLD);
+  }
+
+  function spawnHeart(atTop) {
+    hearts.push({
+      x: Math.random() * W,
+      y: atTop ? -20 : Math.random() * H,
+      vy: 0.5 + Math.random() * 0.9,
+      p: Math.random() * Math.PI * 2,
+      s: 5 + Math.random() * 8,
+      color: PALETTE[Math.floor(Math.random() * 3)],
+      al: 0.3 + Math.random() * 0.45
+    });
+  }
+
+  function drawHearts() {
+    if (!reducedMotion && frameCount % 34 === 0 && hearts.length < 26) spawnHeart(true);
+    for (let k = hearts.length - 1; k >= 0; k--) {
+      const h = hearts[k];
+      h.y += h.vy;
+      h.x += Math.sin(t * 1.3 + h.p) * 0.5;
+      if (h.y > H + 30) { hearts.splice(k, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = h.al * (reducedMotion ? 1 : 0.75 + 0.25 * Math.sin(t * 2 + h.p));
+      ctx.fillStyle = h.color; ctx.shadowColor = h.color; ctx.shadowBlur = 10;
+      traceHeart(h.x, h.y, h.s);
+      ctx.fill();
+      ctx.restore();
+    }
   }
 
   function frame() {
     ctx.clearRect(0, 0, W, H);
     t += 0.012;
-    const pulse = 0.5 + 0.5 * Math.sin(t);
-    const cx = W / 2, cy = H / 2;
-    const baseScale = Math.min(W, H) * 0.022;
+    frameCount++;
 
-    drawHeart(cx, cy, baseScale * (1.12 + 0.04 * pulse), 0.08 + 0.04 * pulse, 0.3 + 0.15 * pulse);
-    drawHeart(cx, cy, baseScale, 0.6 + 0.15 * pulse, 0.55 + 0.25 * pulse);
+    const hub = { x: W / 2, y: H / 2 };
+    const pos = nodes.map(nodePos);
 
-    const sparkCy = cy - baseScale * 5;
-    const sparkSize = baseScale * 1.8 + baseScale * 0.3 * pulse;
-    drawSparkle(cx, sparkCy, sparkSize, 0.7 + 0.3 * pulse);
+    drawStars();
+    drawEdges(hub, pos);
+    drawPulses(hub, pos);
+    const nr = Math.max(13, Math.min(W, H) * 0.024);
+    if (!reducedMotion && frameCount % 70 === 0) {
+      nodes[Math.floor(Math.random() * NODE_COUNT)].flash = 1;
+    }
+    nodes.forEach((n, i) => drawNode(n, pos[i], nr));
+    drawHub(hub);
+    drawHearts();
 
-    [[cx - baseScale*8, cy - baseScale*2], [cx + baseScale*8, cy + baseScale*1],
-     [cx - baseScale*3, cy + baseScale*6]].forEach(([dx, dy], i) => {
-      const r = baseScale * (0.35 + 0.15 * Math.sin(t + i));
-      ctx.save();
-      ctx.globalAlpha = 0.4 + 0.2 * Math.sin(t + i * 1.2);
-      ctx.fillStyle = '#C21860';
-      ctx.shadowColor = '#C21860'; ctx.shadowBlur = 8;
-      ctx.beginPath(); ctx.arc(dx, dy, r, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
-    });
-
-    requestAnimationFrame(frame);
+    if (!reducedMotion) requestAnimationFrame(frame);
   }
+
+  if (reducedMotion) for (let k = 0; k < 10; k++) spawnHeart(false);
   frame();
 </script>
 </body>
